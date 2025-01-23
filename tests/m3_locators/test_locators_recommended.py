@@ -1,5 +1,7 @@
 from playwright.sync_api import Page, expect, BrowserType
 
+from tests.utils.constants import BASE_URL
+
 
 # to slow things down
 def test_headless_and_slow_mo(browser_type: BrowserType):
@@ -7,4 +9,16 @@ def test_headless_and_slow_mo(browser_type: BrowserType):
 
 
 def test_recommended_locators(page: Page):
-    page.goto('')
+    page.goto(BASE_URL)
+
+    first_name = page.get_by_label('First name')
+
+    first_name.fill('Yanina')
+    first_name.clear()
+
+    page.get_by_label('First name').fill('Yanina')
+
+    page.get_by_role('button', name='Register', exact=True).click()
+
+    warning = page.get_by_text('Valid last name is required')
+    expect(warning).to_be_visible()
